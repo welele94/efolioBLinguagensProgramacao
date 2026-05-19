@@ -119,7 +119,7 @@ listar_em_observacao(Lista) :-
     sort(Resultado, Lista).
 
 guardar_base :-
-    open('prolog/base_conhecimento.pl', write, Stream),
+    open('base_conhecimento.pl', write, Stream),
     escrever_factos(Stream),
     close(Stream).
 
