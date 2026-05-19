@@ -1,6 +1,7 @@
 % ============================================================
 % U.C. 21077 - Linguagens de Programacao
 % e-Folio B - Base de Conhecimento Prolog
+% Micael Santos 2400005
 % ============================================================
 
 :- dynamic aluno/2.
