@@ -21,6 +21,8 @@ Requisitos
 - Java JDK.
 - SWI-Prolog com JPL7 instalado.
 - O ficheiro jpl.jar deve estar disponivel no classpath.
+- A biblioteca nativa do SWI-Prolog deve estar visivel para o Java, se a instalacao exigir
+  configuracao de `java.library.path`, `LD_LIBRARY_PATH` ou `DYLD_LIBRARY_PATH`.
 
 Em algumas instalacoes macOS via Homebrew, o JPL pode estar em:
    /usr/local/Cellar/swi-prolog/<versao>/libexec/lib/swipl/lib/jpl.jar
@@ -48,6 +50,25 @@ Execute a aplicacao com o jpl.jar no classpath:
 Opcionalmente pode indicar outro ficheiro de base:
 
    java -cp "java/bin:/caminho/para/jpl.jar" Aplicacao /caminho/para/base_conhecimento.pl
+
+Teste Prolog isolado
+--------------------
+Antes de testar a interface Java, pode validar a logica diretamente no SWI-Prolog:
+
+   swipl
+
+Depois, dentro do interpretador:
+
+   consult('base_conhecimento.pl').
+   listar_em_risco(L).
+   listar_participativos(L).
+   listar_bons(L).
+   listar_acima_media(L).
+   media_turma(M).
+   dados_aluno(1, Nome, Participacoes, Media, Estado).
+
+As listagens obrigatorias devolvem IDs sem duplicados. A interface Java usa predicados
+detalhados adicionais para apresentar tambem nome, participacoes, media e estado.
 
 Funcionalidades
 ---------------

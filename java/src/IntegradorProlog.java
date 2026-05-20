@@ -29,23 +29,23 @@ public class IntegradorProlog {
     }
 
     public String listarEmRisco() {
-        return listar("listar_em_risco");
+        return listarDetalhado("listar_em_risco_detalhado");
     }
 
     public String listarParticipativos() {
-        return listar("listar_participativos");
+        return listarDetalhado("listar_participativos_detalhado");
     }
 
     public String listarBons() {
-        return listar("listar_bons");
+        return listarDetalhado("listar_bons_detalhado");
     }
 
     public String listarAcimaMedia() {
-        return listar("listar_acima_media");
+        return listarDetalhado("listar_acima_media_detalhado");
     }
 
     public String listarEmObservacao() {
-        return listar("listar_em_observacao");
+        return listarDetalhado("listar_em_observacao_detalhado");
     }
 
     public String mediaTurma() {
@@ -119,6 +119,14 @@ public class IntegradorProlog {
             return "[]";
         }
         return solucao.get("Lista").toString();
+    }
+
+    private String listarDetalhado(String predicado) {
+        String lista = listar(predicado);
+        if ("[]".equals(lista)) {
+            return "Sem resultados.";
+        }
+        return lista;
     }
 
     private boolean executarComando(String predicado, Term[] argumentos) {

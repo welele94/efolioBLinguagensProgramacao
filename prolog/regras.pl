@@ -42,16 +42,42 @@ acima_media(Id) :-
     Media >= MediaTurma.
 
 listar_em_risco(Lista) :-
-    findall(Id, em_risco(Id), Lista).
+    findall(Id, em_risco(Id), Resultado),
+    sort(Resultado, Lista).
 
 listar_participativos(Lista) :-
-    findall(Id, participativo(Id), Lista).
+    findall(Id, participativo(Id), Resultado),
+    sort(Resultado, Lista).
 
 listar_bons(Lista) :-
-    findall(Id, bom_desempenho(Id), Lista).
+    findall(Id, bom_desempenho(Id), Resultado),
+    sort(Resultado, Lista).
 
 listar_acima_media(Lista) :-
-    findall(Id, acima_media(Id), Lista).
+    findall(Id, acima_media(Id), Resultado),
+    sort(Resultado, Lista).
+
+aluno_resumo(Id, aluno(Id, Nome, Participacoes, Media, Estado)) :-
+    dados_aluno(Id, Nome, Participacoes, Media, Estado).
+
+detalhar_alunos(Ids, Detalhes) :-
+    maplist(aluno_resumo, Ids, Detalhes).
+
+listar_em_risco_detalhado(Detalhes) :-
+    listar_em_risco(Ids),
+    detalhar_alunos(Ids, Detalhes).
+
+listar_participativos_detalhado(Detalhes) :-
+    listar_participativos(Ids),
+    detalhar_alunos(Ids, Detalhes).
+
+listar_bons_detalhado(Detalhes) :-
+    listar_bons(Ids),
+    detalhar_alunos(Ids, Detalhes).
+
+listar_acima_media_detalhado(Detalhes) :-
+    listar_acima_media(Ids),
+    detalhar_alunos(Ids, Detalhes).
 
 dados_aluno(Id, Nome, Participacoes, Media, Estado) :-
     aluno(Id, Nome),
@@ -73,6 +99,8 @@ valor_estado(_, sem_estado).
 
 adicionar_aluno(Id, Nome) :-
     integer(Id),
+    Id > 0,
+    atom(Nome),
     \+ aluno(Id, _),
     assertz(aluno(Id, Nome)),
     assertz(forum(Id, 0)),
@@ -126,7 +154,12 @@ em_observacao(Id) :-
     Participacoes < 3.
 
 listar_em_observacao(Lista) :-
-    findall(Id, em_observacao(Id), Lista).
+    findall(Id, em_observacao(Id), Resultado),
+    sort(Resultado, Lista).
+
+listar_em_observacao_detalhado(Detalhes) :-
+    listar_em_observacao(Ids),
+    detalhar_alunos(Ids, Detalhes).
 
 guardar_base :-
     ficheiro_base(Caminho),
