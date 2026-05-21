@@ -29,23 +29,23 @@ public class IntegradorProlog {
     }
 
     public String listarEmRisco() {
-        return listarDetalhado("listar_em_risco_detalhado");
+        return listarAlunosFormatado("listar_em_risco");
     }
 
     public String listarParticipativos() {
-        return listarDetalhado("listar_participativos_detalhado");
+        return listarAlunosFormatado("listar_participativos");
     }
 
     public String listarBons() {
-        return listarDetalhado("listar_bons_detalhado");
+        return listarAlunosFormatado("listar_bons");
     }
 
     public String listarAcimaMedia() {
-        return listarDetalhado("listar_acima_media_detalhado");
+        return listarAlunosFormatado("listar_acima_media");
     }
 
     public String listarEmObservacao() {
-        return listarDetalhado("listar_em_observacao_detalhado");
+        return listarAlunosFormatado("listar_em_observacao");
     }
 
     public String mediaTurma() {
@@ -59,31 +59,12 @@ public class IntegradorProlog {
     }
 
     public String consultarAluno(int id) {
-        Variable nome = new Variable("Nome");
-        Variable participacoes = new Variable("Participacoes");
-        Variable media = new Variable("Media");
-        Variable estado = new Variable("Estado");
-        Query consulta = new Query(
-            "dados_aluno",
-            new Term[] {
-                new org.jpl7.Integer(id),
-                nome,
-                participacoes,
-                media,
-                estado
-            }
-        );
-
-        Map<String, Term> solucao = consulta.oneSolution();
+        Map<String, Term> solucao = obterDadosAluno(id);
         if (solucao == null) {
             return "Aluno nao encontrado.";
         }
 
-        return "ID: " + id + System.lineSeparator()
-            + "Nome: " + limparAtom(solucao.get("Nome")) + System.lineSeparator()
-            + "Participacoes no forum: " + solucao.get("Participacoes") + System.lineSeparator()
-            + "Media: " + solucao.get("Media") + System.lineSeparator()
-            + "Estado: " + solucao.get("Estado");
+        return formatarAluno(id, solucao);
     }
 
     public boolean adicionarAluno(int id, String nome) {
@@ -111,22 +92,61 @@ public class IntegradorProlog {
         return executarComando("remover_aluno", new Term[] { new org.jpl7.Integer(id) });
     }
 
-    private String listar(String predicado) {
+    private String listarAlunosFormatado(String predicadoListagem) {
         Variable lista = new Variable("Lista");
-        Query consulta = new Query(predicado, new Term[] { lista });
+        Query consulta = new Query(predicadoListagem, new Term[] { lista });
         Map<String, Term> solucao = consulta.oneSolution();
-        if (solucao == null) {
-            return "[]";
-        }
-        return solucao.get("Lista").toString();
-    }
 
-    private String listarDetalhado(String predicado) {
-        String lista = listar(predicado);
-        if ("[]".equals(lista)) {
+        if (solucao == null) {
             return "Sem resultados.";
         }
-        return lista;
+
+        Term[] ids = solucao.get("Lista").toTermArray();
+        if (ids.length == 0) {
+            return "Sem resultados.";
+        }
+
+        StringBuilder resultado = new StringBuilder();
+
+        for (Term idTermo : ids) {
+            int id = idTermo.intValue();
+            Map<String, Term> dados = obterDadosAluno(id);
+
+            if (dados != null) {
+                resultado.append(formatarAluno(id, dados))
+                    .append(System.lineSeparator());
+            }
+        }
+
+        return resultado.toString();
+    }
+
+    private Map<String, Term> obterDadosAluno(int id) {
+        Variable nome = new Variable("Nome");
+        Variable participacoes = new Variable("Participacoes");
+        Variable media = new Variable("Media");
+        Variable estado = new Variable("Estado");
+
+        Query consulta = new Query(
+            "dados_aluno",
+            new Term[] {
+                new org.jpl7.Integer(id),
+                nome,
+                participacoes,
+                media,
+                estado
+            }
+        );
+
+        return consulta.oneSolution();
+    }
+
+    private String formatarAluno(int id, Map<String, Term> dados) {
+        return "- Aluno ID: " + id + System.lineSeparator()
+            + "  Nome: " + limparAtom(dados.get("Nome")) + System.lineSeparator()
+            + "  Participacoes: " + dados.get("Participacoes") + System.lineSeparator()
+            + "  Media: " + dados.get("Media") + System.lineSeparator()
+            + "  Estado: " + dados.get("Estado") + System.lineSeparator();
     }
 
     private boolean executarComando(String predicado, Term[] argumentos) {
