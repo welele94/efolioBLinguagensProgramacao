@@ -1,5 +1,7 @@
 JAVAC=javac
-JPL_JAR?=$(firstword $(wildcard /opt/homebrew/Cellar/swi-prolog/*/libexec/lib/swipl/lib/jpl.jar /usr/local/Cellar/swi-prolog/*/libexec/lib/swipl/lib/jpl.jar))
+JAVA=java
+JPL_JAR?=$(firstword $(wildcard /usr/share/java/jpl.jar /usr/lib/swi-prolog/lib/jpl.jar /opt/homebrew/Cellar/swi-prolog/*/libexec/lib/swipl/lib/jpl.jar /usr/local/Cellar/swi-prolog/*/libexec/lib/swipl/lib/jpl.jar))
+SWIPL_LIB?=/usr/lib/swi-prolog/lib/x86_64-linux
 
 .PHONY: all check-jpl java run clean
 
@@ -13,7 +15,7 @@ java: check-jpl
 	$(JAVAC) -encoding UTF-8 -cp "$(JPL_JAR)" -d java/bin java/src/*.java
 
 run: java
-	java -cp "java/bin:$(JPL_JAR)" Aplicacao
+	LD_LIBRARY_PATH="$(SWIPL_LIB):$$LD_LIBRARY_PATH" $(JAVA) -Djava.library.path="$(SWIPL_LIB)" -cp "java/bin:$(JPL_JAR)" Aplicacao
 
 clean:
-	rm -rf java/bin boletins
+	rm -rf java/bin bin boletins
