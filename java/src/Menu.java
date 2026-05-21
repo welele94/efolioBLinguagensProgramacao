@@ -11,59 +11,139 @@ public class Menu {
 
     public void iniciar() {
         boolean ativo = true;
+
         while (ativo) {
-            imprimirOpcoes();
+            imprimirMenuPrincipal();
             String opcao = scanner.nextLine().trim();
 
             try {
-                if ("1".equals(opcao)) {
-                    imprimirLista("Alunos em risco", integrador.listarEmRisco());
-                } else if ("2".equals(opcao)) {
-                    imprimirLista("Alunos participativos", integrador.listarParticipativos());
-                } else if ("3".equals(opcao)) {
-                    imprimirLista("Alunos com bom desempenho", integrador.listarBons());
-                } else if ("4".equals(opcao)) {
-                    imprimirLista("Alunos acima da media da turma", integrador.listarAcimaMedia());
-                } else if ("5".equals(opcao)) {
-                    consultarAluno();
-                } else if ("6".equals(opcao)) {
-                    adicionarAluno();
-                } else if ("7".equals(opcao)) {
-                    atualizarMedia();
-                } else if ("8".equals(opcao)) {
-                    atualizarParticipacao();
-                } else if ("9".equals(opcao)) {
-                    removerAluno();
-                } else if ("10".equals(opcao)) {
-                    imprimirLista("Alunos em observacao", integrador.listarEmObservacao());
-                } else if ("11".equals(opcao)) {
-                    imprimir(integrador.mediaTurma());
-                } else if ("0".equals(opcao)) {
-                    ativo = false;
-                } else {
-                    System.out.println("Opcao invalida.");
+                switch (opcao) {
+                    case "1":
+                        menuListarAlunos();
+                        break;
+                    case "2":
+                        consultarAluno();
+                        break;
+                    case "3":
+                        adicionarAluno();
+                        break;
+                    case "4":
+                        menuAtualizarAluno();
+                        break;
+                    case "5":
+                        removerAluno();
+                        break;
+                    case "6":
+                        imprimir(integrador.mediaTurma());
+                        break;
+                    case "0":
+                        ativo = false;
+                        System.out.println("A sair...");
+                        break;
+                    default:
+                        System.out.println("Opcao invalida.");
+                        break;
                 }
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: introduza um valor numerico valido.");
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
             }
         }
     }
 
-    private void imprimirOpcoes() {
+    private void imprimirMenuPrincipal() {
         System.out.println();
         System.out.println("=== Sistema Prolog de Acompanhamento de Turmas ===");
-        System.out.println("1 - Listar alunos em risco");
-        System.out.println("2 - Listar alunos participativos");
-        System.out.println("3 - Listar alunos com bom desempenho");
-        System.out.println("4 - Listar alunos acima da media da turma");
-        System.out.println("5 - Consultar aluno por ID");
-        System.out.println("6 - Adicionar aluno");
-        System.out.println("7 - Atualizar media de aluno");
-        System.out.println("8 - Atualizar participacao de aluno");
-        System.out.println("9 - Remover aluno da base de conhecimento");
-        System.out.println("10 - Bonus: listar alunos em observacao");
-        System.out.println("11 - Mostrar media da turma");
+        System.out.println("1 - Listar alunos");
+        System.out.println("2 - Consultar aluno por ID");
+        System.out.println("3 - Adicionar aluno");
+        System.out.println("4 - Atualizar dados de aluno");
+        System.out.println("5 - Remover aluno da base de conhecimento");
+        System.out.println("6 - Mostrar media da turma");
         System.out.println("0 - Sair");
+        System.out.print("Opcao: ");
+    }
+
+    private void menuListarAlunos() {
+        boolean voltar = false;
+
+        while (!voltar) {
+            imprimirMenuListagens();
+            String opcao = scanner.nextLine().trim();
+
+            switch (opcao) {
+                case "1":
+                    imprimirLista("Alunos em risco", integrador.listarEmRisco());
+                    break;
+                case "2":
+                    imprimirLista("Alunos participativos", integrador.listarParticipativos());
+                    break;
+                case "3":
+                    imprimirLista("Alunos com bom desempenho", integrador.listarBons());
+                    break;
+                case "4":
+                    imprimirLista("Alunos acima da media da turma", integrador.listarAcimaMedia());
+                    break;
+                case "5":
+                    imprimirLista("Alunos em observacao", integrador.listarEmObservacao());
+                    break;
+                case "0":
+                    voltar = true;
+                    break;
+                default:
+                    System.out.println("Opcao invalida.");
+                    break;
+            }
+        }
+    }
+
+    private void imprimirMenuListagens() {
+        System.out.println();
+        System.out.println("=== Listar alunos ===");
+        System.out.println("1 - Alunos em risco");
+        System.out.println("2 - Alunos participativos");
+        System.out.println("3 - Alunos com bom desempenho");
+        System.out.println("4 - Alunos acima da media da turma");
+        System.out.println("5 - Bonus: alunos em observacao");
+        System.out.println("0 - Voltar ao menu principal");
+        System.out.print("Opcao: ");
+    }
+
+    private void menuAtualizarAluno() {
+        boolean voltar = false;
+
+        while (!voltar) {
+            imprimirMenuAtualizacao();
+            String opcao = scanner.nextLine().trim();
+
+            try {
+                switch (opcao) {
+                    case "1":
+                        atualizarMedia();
+                        break;
+                    case "2":
+                        atualizarParticipacao();
+                        break;
+                    case "0":
+                        voltar = true;
+                        break;
+                    default:
+                        System.out.println("Opcao invalida.");
+                        break;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Erro: introduza um valor numerico valido.");
+            }
+        }
+    }
+
+    private void imprimirMenuAtualizacao() {
+        System.out.println();
+        System.out.println("=== Atualizar dados de aluno ===");
+        System.out.println("1 - Atualizar media");
+        System.out.println("2 - Atualizar participacao no forum");
+        System.out.println("0 - Voltar ao menu principal");
         System.out.print("Opcao: ");
     }
 
@@ -92,6 +172,7 @@ public class Menu {
     private void adicionarAluno() {
         int id = lerId();
         String nome = lerTexto("Nome do aluno: ");
+
         if (integrador.adicionarAluno(id, nome)) {
             System.out.println("Aluno adicionado e base persistida.");
         } else {
@@ -102,6 +183,7 @@ public class Menu {
     private void atualizarMedia() {
         int id = lerId();
         double media = lerDouble("Nova media (0 a 20): ");
+
         if (integrador.atualizarMedia(id, media)) {
             System.out.println("Media atualizada e base persistida.");
         } else {
@@ -112,6 +194,7 @@ public class Menu {
     private void atualizarParticipacao() {
         int id = lerId();
         int participacoes = Integer.parseInt(lerTexto("Numero de participacoes: "));
+
         if (integrador.atualizarParticipacao(id, participacoes)) {
             System.out.println("Participacao atualizada e base persistida.");
         } else {
@@ -122,6 +205,7 @@ public class Menu {
     private void removerAluno() {
         int id = lerId();
         String confirmacao = lerTexto("Confirmar remocao? (s/N): ");
+
         if (!"s".equalsIgnoreCase(confirmacao)) {
             System.out.println("Operacao cancelada.");
             return;
@@ -141,6 +225,8 @@ public class Menu {
 
     private void imprimirLista(String titulo, String lista) {
         System.out.println();
-        System.out.println(titulo + ": " + lista);
+        System.out.println(titulo + ":");
+        System.out.println();
+        System.out.println(lista);
     }
 }
