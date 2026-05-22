@@ -14,14 +14,20 @@ public class IntegradorProlog {
     }
 
     private void carregarBase() {
+        // Aqui e feito o consult do ficheiro principal Prolog.
+        // No projeto, esse ficheiro e o sistema.pl, que por sua vez carrega os factos
+        // e as regras. Isto evita carregar apenas metade do sistema por engano.
         Query consulta = new Query("consult", new Term[] { new Atom(ficheiroBase) });
         if (!consulta.hasSolution()) {
             throw new IllegalStateException("Nao foi possivel carregar " + ficheiroBase);
         }
 
+        // Depois de carregar o Prolog, indicamos ao proprio Prolog onde deve guardar
+        // as alteracoes feitas durante a execucao. Esta parte e importante para a
+        // persistencia de adicionar, atualizar e remover alunos.
         Query configurarPersistencia = new Query(
             "set_ficheiro_base",
-            new Term[] { new Atom(ficheiroBase) }
+            new Term[] { new Atom("prolog/base_conhecimento.pl") }
         );
         if (!configurarPersistencia.hasSolution()) {
             throw new IllegalStateException("Nao foi possivel configurar a persistencia Prolog.");
@@ -93,6 +99,9 @@ public class IntegradorProlog {
     }
 
     private String listarAlunosFormatado(String predicadoListagem) {
+        // As listagens Prolog obrigatorias devolvem listas de IDs.
+        // Para o utilizador, isso era pouco legivel, por isso aqui obtemos a lista
+        // e depois vamos buscar os dados completos de cada aluno.
         Variable lista = new Variable("Lista");
         Query consulta = new Query(predicadoListagem, new Term[] { lista });
         Map<String, Term> solucao = consulta.oneSolution();
@@ -122,6 +131,9 @@ public class IntegradorProlog {
     }
 
     private Map<String, Term> obterDadosAluno(int id) {
+        // Este metodo centraliza a chamada ao predicado dados_aluno/5.
+        // Assim, tanto a consulta individual como as listagens formatadas usam
+        // exatamente a mesma informacao vinda do Prolog.
         Variable nome = new Variable("Nome");
         Variable participacoes = new Variable("Participacoes");
         Variable media = new Variable("Media");
@@ -142,6 +154,7 @@ public class IntegradorProlog {
     }
 
     private String formatarAluno(int id, Map<String, Term> dados) {
+        // Formato simples e mais legivel do que imprimir diretamente os termos Prolog.
         return "- Aluno ID: " + id + System.lineSeparator()
             + "  Nome: " + limparAtom(dados.get("Nome")) + System.lineSeparator()
             + "  Participacoes: " + dados.get("Participacoes") + System.lineSeparator()
@@ -150,11 +163,14 @@ public class IntegradorProlog {
     }
 
     private boolean executarComando(String predicado, Term[] argumentos) {
+        // Para comandos de escrita, basta saber se o predicado Prolog teve sucesso.
         Query consulta = new Query(predicado, argumentos);
         return consulta.hasSolution();
     }
 
     private String limparAtom(Term termo) {
+        // Alguns nomes chegam do Prolog com aspas simples. Para apresentar no menu,
+        // removemos essas aspas quando existem.
         String texto = termo.toString();
         if (texto.length() >= 2 && texto.startsWith("'") && texto.endsWith("'")) {
             return texto.substring(1, texto.length() - 1);
