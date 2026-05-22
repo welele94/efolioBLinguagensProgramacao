@@ -45,6 +45,7 @@ public class Menu {
                         break;
                 }
             } catch (NumberFormatException e) {
+                // Este erro aparece quando o utilizador escreve texto onde era esperado um numero.
                 System.out.println("Erro: introduza um valor numerico valido.");
             } catch (Exception e) {
                 System.out.println("Erro: " + e.getMessage());
@@ -66,6 +67,8 @@ public class Menu {
     }
 
     private void menuListarAlunos() {
+        // As listagens ficaram num submenu para o menu principal nao ficar demasiado grande.
+        // Todas estas opcoes continuam a chamar predicados Prolog, atraves do integrador.
         boolean voltar = false;
 
         while (!voltar) {
@@ -111,6 +114,8 @@ public class Menu {
     }
 
     private void menuAtualizarAluno() {
+        // A atualizacao tambem foi separada para deixar claro que ha duas alteracoes possiveis:
+        // media e participacao. A decisao sobre o novo estado continua a ser feita no Prolog.
         boolean voltar = false;
 
         while (!voltar) {
@@ -206,6 +211,7 @@ public class Menu {
         int id = lerId();
         String confirmacao = lerTexto("Confirmar remocao? (s/N): ");
 
+        // Como remover altera a base de conhecimento, e pedido um passo simples de confirmacao.
         if (!"s".equalsIgnoreCase(confirmacao)) {
             System.out.println("Operacao cancelada.");
             return;
