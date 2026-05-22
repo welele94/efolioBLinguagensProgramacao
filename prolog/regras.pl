@@ -171,7 +171,6 @@ guardar_base :-
     escrever_factos(Stream, quiz/2),
     escrever_factos(Stream, media/2),
     escrever_factos(Stream, estado/2),
-    write(Stream, ':- consult(''prolog/regras.pl'').' ), nl(Stream),
     close(Stream).
 
 escrever_cabecalho(Stream) :-
