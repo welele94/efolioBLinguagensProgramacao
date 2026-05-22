@@ -12,8 +12,8 @@
 % ?- consult('sistema.pl').
 % ============================================================
 
-:- consult('base_conhecimento.pl').
+:- consult('prolog/base_conhecimento.pl').
 :- consult('prolog/regras.pl').
 
 % Define explicitamente o ficheiro onde as alteracoes devem ser persistidas.
-:- set_ficheiro_base('base_conhecimento.pl').
+:- set_ficheiro_base('prolog/base_conhecimento.pl').

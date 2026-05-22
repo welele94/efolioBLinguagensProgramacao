@@ -2,7 +2,7 @@ import java.util.Scanner;
 
 public class Aplicacao {
     public static void main(String[] args) {
-        String ficheiroProlog = args.length > 0 ? args[0] : "sistema.pl";
+        String ficheiroProlog = args.length > 0 ? args[0] : "prolog/sistema.pl";
 
         Scanner scanner = new Scanner(System.in);
 
