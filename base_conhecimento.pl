@@ -48,5 +48,3 @@ estado(3, aprovado).
 estado(4, condicionado).
 estado(5, em_risco).
 estado(6, aprovado).
-
-:- consult('prolog/regras.pl').
